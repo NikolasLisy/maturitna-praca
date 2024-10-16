@@ -1,4 +1,3 @@
-import { ShoppingCartIcon } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 import MobileMenu from "./MobileMenu";
