@@ -38,7 +38,7 @@ export async function POST(req: Request) {
         password: hashedPassword,
       },
     });
-    const { password: _newUserPassword, ...rest } = newUser;
+    const { password: newUserPassword, ...rest } = newUser;
 
     return NextResponse.json(
       {

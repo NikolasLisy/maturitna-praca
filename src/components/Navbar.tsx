@@ -1,8 +1,28 @@
 import Link from "next/link";
-import { buttonVariants } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import MobileMenu from "./MobileMenu";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import LogOutUserButton from "./ui/LogOutUserButton";
+import db from "@/lib/db";
 
-export function Navbar() {
+export async function Navbar() {
+  const session = await getServerSession(authOptions);
+
+  let isAdmin = false;
+
+  if (session?.user.email) {
+    const currentUser = await db.user.findUnique({
+      where: {
+        email: session.user.email,
+      },
+    });
+
+    if (currentUser?.isAdmin) {
+      isAdmin = true;
+    }
+  }
+
   return (
     <nav className="flex items-center justify-between h-24">
       <div className="lg:block">
@@ -12,16 +32,24 @@ export function Navbar() {
       </div>
       <div className="hidden md:flex">
         <div className="flex gap-6">
+          {isAdmin && <Link href="/admin">Admin Dashboard</Link>}
           <Link href="/store">Obchod</Link>
           <Link href="/contact">Kontakt</Link>
           <Link href="/newsletter">Newsletter</Link>
         </div>
       </div>
       <div className="flex items-center gap-4 xl:gap-8 justify-end">
-        <MobileMenu />
-        <Link href="/sign-in" className={`hidden md:flex ${buttonVariants()}`}>
-          Prihlásiť sa
-        </Link>
+        <MobileMenu isAdmin={isAdmin} session={session} />
+        {session?.user ? (
+          <LogOutUserButton />
+        ) : (
+          <Link
+            href="/sign-in"
+            className={`hidden md:flex ${buttonVariants()}`}
+          >
+            Prihlásiť sa
+          </Link>
+        )}
       </div>
     </nav>
   );

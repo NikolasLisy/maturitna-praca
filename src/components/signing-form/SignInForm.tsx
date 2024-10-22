@@ -16,17 +16,18 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import GoogleSignInButton from "../GoogleSignInButton";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 const FormSchema = z.object({
   email: z.string().min(1, "Email je povinný.").email("Neplatný email"),
   password: z.string().min(1, "Heslo je potrebné"),
 });
 
-const onSubmit = (values: z.infer<typeof FormSchema>) => {
-  console.log(values);
-};
-
 const SignInForm = () => {
+  const router = useRouter();
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -34,6 +35,29 @@ const SignInForm = () => {
       password: "",
     },
   });
+
+  const onSubmit = async (values: z.infer<typeof FormSchema>) => {
+    const signInData = await signIn("credentials", {
+      email: values.email,
+      password: values.password,
+      redirect: false,
+    });
+
+    if (signInData?.error) {
+      toast({
+        title: "Chyba!",
+        description: "Oops! Niečo sa pokazi!",
+        variant: "destructive",
+      });
+    } else {
+      router.push("/");
+      router.refresh();
+      toast({
+        title: "Vítate!",
+        description: "Vítate späť!",
+      });
+    }
+  };
 
   return (
     <Form {...form}>

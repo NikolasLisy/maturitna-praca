@@ -17,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import GoogleSignInButton from "../GoogleSignInButton";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 const FormSchema = z
   .object({
@@ -32,6 +33,7 @@ const FormSchema = z
   });
 
 const SignUpForm = () => {
+  const { toast } = useToast();
   const router = useRouter();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -61,7 +63,11 @@ const SignUpForm = () => {
     if (response.ok) {
       router.push("/sign-in");
     } else {
-      console.error("Registrácia nebola úspešná");
+      toast({
+        title: "Chyba!",
+        description: "Užívateľ s touto E-mailovou adresou už existuje!",
+        variant: "destructive",
+      });
     }
   };
 
