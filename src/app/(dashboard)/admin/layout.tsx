@@ -1,7 +1,10 @@
 import AdminNavbar from "@/components/admin-components/AdminNavbar";
+import WithoutAdminRights from "@/components/admin-components/WithoutAdminRights";
 import { authOptions } from "@/lib/auth";
 import db from "@/lib/db";
 import { getServerSession } from "next-auth";
+
+export const dynamic = "force-dynamic";
 
 export default async function RootLayout({
   children,
@@ -31,7 +34,7 @@ export default async function RootLayout({
           <div className="pt-[60px]">{children}</div>
         </div>
       ) : (
-        <div>{children}</div>
+        <WithoutAdminRights />
       )}
     </div>
   );

@@ -36,10 +36,16 @@ async function getUserData() {
   };
 }
 
+async function getProductData() {
+  const allProducts = await db.product.count();
+  return { allProducts };
+}
+
 const WithAdminRights = async () => {
-  const [salesData, userData] = await Promise.all([
+  const [salesData, userData, productData] = await Promise.all([
     getSalesData(),
     getUserData(),
+    getProductData(),
   ]);
 
   type DashBoardCardProps = {
@@ -78,8 +84,10 @@ const WithAdminRights = async () => {
       />
       <DashboardCard
         title="Aktívne Produkty"
-        subtitle={`${formatNumber(salesData.numberOfSales)} Neaktívne`}
-        body={formatCurrency(salesData.amount)}
+        subtitle={`Všetky Produkty`}
+        body={`Počet všetkých produktov - ${formatNumber(
+          productData.allProducts
+        )}`}
       />
     </div>
   );
