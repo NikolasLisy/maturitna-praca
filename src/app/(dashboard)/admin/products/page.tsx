@@ -1,3 +1,4 @@
+import { CategorySelector } from "@/components/admin-components/CategorySelector";
 import { PageHeader } from "@/components/admin-components/PageHeader";
 import { DeleteDropDownItem } from "@/components/admin-components/ProductActions";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,7 @@ import {
 } from "@/components/ui/table";
 import db from "@/lib/db";
 import { formatCurrency, formatNumber } from "@/lib/formatters";
-import { MoreVertical } from "lucide-react";
+import { ChevronDown, MoreVertical } from "lucide-react";
 import Link from "next/link";
 
 export default function ProductsPage() {
@@ -67,7 +68,10 @@ async function ProductsTable() {
           <TableRow key={product.id}>
             <TableCell>{product.name}</TableCell>
             <TableCell>{formatCurrency(product.price)}</TableCell>
-            <TableCell>{product.category.name}</TableCell>
+            <TableCell className="flex gap-1 items-center">
+              {product.category.name}
+              <CategorySelector productId={product.id} />
+            </TableCell>
             <TableCell>{product.stock}</TableCell>
             <TableCell>{formatNumber(product._count.orderItems)}</TableCell>
             <TableCell>

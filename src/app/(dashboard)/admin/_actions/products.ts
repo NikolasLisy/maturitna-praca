@@ -26,6 +26,14 @@ const addSchema = z.object({
   }),
 });
 
+const editSchema = addSchema.extend({
+  image: imageSchema.optional(),
+});
+
+const categoryAddSchema = z.object({
+  name: z.string().min(1, { message: "Názov kategórie je povinný" }),
+});
+
 export async function addProduct(prevState: unknown, formData: FormData) {
   const result = addSchema.safeParse(Object.fromEntries(formData.entries()));
   if (result.success === false) {
@@ -49,8 +57,66 @@ export async function addProduct(prevState: unknown, formData: FormData) {
       imagePath,
       stock: data.stock,
       category: {
-        create: { name: "Unidentified Category for testing purposes" },
+        connect: { id: "d63f5d14-a242-4411-b507-3364dfee7a23" },
       },
+    },
+  });
+
+  redirect("/admin/products");
+}
+
+export async function addCategory(prevState: unknown, formData: FormData) {
+  const result = categoryAddSchema.safeParse(
+    Object.fromEntries(formData.entries())
+  );
+  if (result.success === false) {
+    return result.error.formErrors.fieldErrors;
+  }
+
+  const data = result.data;
+
+  await db.category.create({
+    data: {
+      name: data.name,
+    },
+  });
+
+  redirect("/admin/products");
+}
+
+export async function updateProduct(
+  id: string,
+  prevState: unknown,
+  formData: FormData
+) {
+  const result = editSchema.safeParse(Object.fromEntries(formData.entries()));
+  if (result.success === false) {
+    return result.error.formErrors.fieldErrors;
+  }
+
+  const data = result.data;
+  const product = await db.product.findUnique({ where: { id } });
+
+  if (product == null) return notFound();
+
+  let imagePath = product.imagePath;
+  if (data.image != null && data.image.size > 0) {
+    await fs.unlink(`public${product.imagePath}`);
+    imagePath = `/products/${crypto.randomUUID()}-${data.image.name}`;
+    await fs.writeFile(
+      `public${imagePath}`,
+      Buffer.from(await data.image.arrayBuffer())
+    );
+  }
+
+  await db.product.update({
+    where: { id },
+    data: {
+      name: data.name,
+      description: data.description,
+      price: data.price,
+      imagePath,
+      stock: data.stock,
     },
   });
 
@@ -60,4 +126,6 @@ export async function addProduct(prevState: unknown, formData: FormData) {
 export async function deleteProduct(id: string) {
   const product = await db.product.delete({ where: { id } });
   if (product == null) return notFound();
+
+  await fs.unlink(`public${product.imagePath}`);
 }
