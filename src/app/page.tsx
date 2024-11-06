@@ -15,6 +15,7 @@ export default async function Home() {
             Admin Dashboard
           </Link>
           <h2>{JSON.stringify(session)}</h2>
+          <h2>ID pouzívateľa: {session?.user.id}</h2>
         </div>
       </div>
     </>

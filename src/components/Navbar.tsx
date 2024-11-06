@@ -10,9 +10,10 @@ export async function Navbar() {
   const session = await getServerSession(authOptions);
 
   let isAdmin = false;
+  let currentUser = null;
 
   if (session?.user.email) {
-    const currentUser = await db.user.findUnique({
+    currentUser = await db.user.findUnique({
       where: {
         email: session.user.email,
       },
@@ -36,6 +37,9 @@ export async function Navbar() {
           <Link href="/store">Obchod</Link>
           <Link href="/contact">Kontakt</Link>
           <Link href="/newsletter">Newsletter</Link>
+          {currentUser && (
+            <Link href={`/profile/${currentUser.id}`}>Profil</Link>
+          )}
         </div>
       </div>
       <div className="flex items-center gap-4 xl:gap-8 justify-end">

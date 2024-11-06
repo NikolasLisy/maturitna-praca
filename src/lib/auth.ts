@@ -47,7 +47,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         return {
-          id: existingUser.id,
+          id: `${existingUser.id}`,
           email: existingUser.email,
           name: existingUser.name,
         };
@@ -60,16 +60,20 @@ export const authOptions: NextAuthOptions = {
         return {
           ...token,
           name: user.name,
+          id: user.id,
         };
       }
       return token;
     },
     async session({ session, token }) {
+      console.log(token);
+
       return {
         ...session,
         user: {
           ...session.user,
           name: token.name,
+          id: token.id,
         },
       };
     },
