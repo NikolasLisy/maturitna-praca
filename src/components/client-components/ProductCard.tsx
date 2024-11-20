@@ -15,10 +15,32 @@ type ProductCardProps = {
   name: string;
   description: string;
   authorName: string;
-  imagePath: String;
-  publisher: String;
-  price: Number;
+  imagePath: string;
+  publisher: string;
+  price: number;
 };
+
+function wordFormatter(word: string) {
+  let newWord = "";
+  if (word.length > 10) {
+    newWord = word.slice(0, 10) + "...";
+  } else {
+    newWord = word;
+  }
+
+  return newWord;
+}
+
+function descriptionFormatter(description: string) {
+  let newDescription = "";
+  if (description.length > 20) {
+    newDescription = description.slice(0, 20) + "...";
+  } else {
+    newDescription = description;
+  }
+
+  return newDescription;
+}
 
 export function ProductCard({
   id,
@@ -35,11 +57,11 @@ export function ProductCard({
         <Image src={imagePath} width={200} height={400} alt="ProductImage" />
       </div>
       <CardHeader>
-        <CardTitle>{name}</CardTitle>
-        <CardDescription>{price}€</CardDescription>
+        <CardTitle>{wordFormatter(name)}</CardTitle>
+        <CardDescription>{price}</CardDescription>
       </CardHeader>
       <CardContent>
-        <p>{description}</p>
+        <p>{descriptionFormatter(description)}</p>
         <Link href={"/products"} className="text-blue-500 hover:text-blue-600">
           Viac
         </Link>

@@ -40,11 +40,11 @@ export default async function Home() {
       </div>
       <ProductGridSection
         productsFetcher={getNewestProducts}
-        title="Najnovšie Produkty"
+        title="Najnovšie"
       />
       <ProductGridSection
         productsFetcher={getMostPopularProducts}
-        title="Najpopularnejšie Produkty"
+        title="Najpopularnejšie"
       />
     </main>
   );
