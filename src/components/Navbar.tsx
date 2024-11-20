@@ -5,6 +5,23 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import LogOutUserButton from "./ui/LogOutUserButton";
 import db from "@/lib/db";
+import {
+  BookOpenText,
+  CircleUserRound,
+  Package,
+  Settings,
+  User,
+  UserRoundCog,
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 export async function Navbar() {
   const session = await getServerSession(authOptions);
@@ -27,26 +44,82 @@ export async function Navbar() {
   return (
     <nav className="flex items-center justify-between h-24">
       <div className="lg:block">
-        <Link href="/" className="font-bold text-xl text-black">
-          STORELOGO
-        </Link>
+        <div className="flex">
+          <BookOpenText />
+          <Link href="/" className="font-bold text-xl pl-1 text-black">
+            LITERA.sk
+          </Link>
+        </div>
       </div>
       <div className="hidden md:flex">
         <div className="flex gap-6">
-          {isAdmin && <Link href="/admin">Admin Dashboard</Link>}
-          <Link href="/store">Obchod</Link>
+          <Link href="/store">Knihy</Link>
           <Link href="/contact">Kontakt</Link>
           <Link href="/newsletter">Newsletter</Link>
-          {currentUser && (
-            <Link href={`/profile/${currentUser.id}`}>Profil</Link>
-          )}
         </div>
       </div>
       <div className="flex items-center gap-4 xl:gap-8 justify-end">
         <MobileMenu isAdmin={isAdmin} session={session} />
         {session?.user ? (
-          <LogOutUserButton />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <CircleUserRound className="cursor-pointer w-8 h-8" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Môj účet</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  <User />
+                  {currentUser && (
+                    <Link
+                      className="w-full"
+                      href={`/profile/${currentUser.id}`}
+                    >
+                      Profil
+                    </Link>
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Settings />
+                  {currentUser && (
+                    <Link
+                      className="w-full"
+                      href={`/profile/${currentUser.id}/settings`}
+                    >
+                      Nastavenia
+                    </Link>
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Package />
+                  {currentUser && (
+                    <Link
+                      className="w-full"
+                      href={`/profile/${currentUser.id}/orders`}
+                    >
+                      Objednávky
+                    </Link>
+                  )}
+                </DropdownMenuItem>
+                {isAdmin && (
+                  <DropdownMenuItem>
+                    <UserRoundCog />
+                    <Link className="w-full" href={`/admin`}>
+                      Admin Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <LogOutUserButton />
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         ) : (
+          // <LogOutUserButton />
+
           <Link
             href="/sign-in"
             className={`hidden md:flex ${buttonVariants()}`}

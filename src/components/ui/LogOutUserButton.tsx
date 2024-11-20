@@ -2,6 +2,7 @@
 
 import { signOut } from "next-auth/react";
 import { Button } from "./button";
+import { LogOut } from "lucide-react";
 
 const LogOutUserButton = () => {
   return (
@@ -12,8 +13,9 @@ const LogOutUserButton = () => {
           callbackUrl: `${window.location.origin}/sign-in`,
         })
       }
-      className={`hidden md:flex`}
+      className={`flex w-full gap-1`}
     >
+      <LogOut />
       Odhlásiť sa
     </Button>
   );

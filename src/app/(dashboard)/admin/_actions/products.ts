@@ -13,6 +13,8 @@ const imageSchema = z
 
 const addSchema = z.object({
   name: z.string().min(1, { message: "Názov produktu je povinný" }),
+  author: z.string().min(1, { message: "Meno autora je povinné" }),
+  publisher: z.string().min(1, { message: "Názov vydavateľstva je povinný" }),
   description: z.string().min(1, { message: "Popis produktu je povinný" }),
   price: z.coerce
     .number()
@@ -34,6 +36,13 @@ const categoryAddSchema = z.object({
   name: z.string().min(1, { message: "Názov kategórie je povinný" }),
 });
 
+const bannerAddSchema = z.object({
+  name: z.string().min(1, { message: "Názov banneru je povinný" }),
+  image: imageSchema.refine((file) => file.size > 0, {
+    message: "Fotka produktu je povinná",
+  }),
+});
+
 export async function addProduct(prevState: unknown, formData: FormData) {
   const result = addSchema.safeParse(Object.fromEntries(formData.entries()));
   if (result.success === false) {
@@ -52,12 +61,14 @@ export async function addProduct(prevState: unknown, formData: FormData) {
   await db.product.create({
     data: {
       name: data.name,
+      authorName: data.author,
+      publisher: data.publisher,
       description: data.description,
       price: data.price,
       imagePath,
       stock: data.stock,
       category: {
-        connect: { id: "d63f5d14-a242-4411-b507-3364dfee7a23" },
+        connect: { id: "3a118783-dfb5-4486-a1cf-83e609ddc4a6" },
       },
     },
   });
@@ -82,6 +93,33 @@ export async function addCategory(prevState: unknown, formData: FormData) {
   });
 
   redirect("/admin/products");
+}
+
+export async function addBanner(prevState: unknown, formData: FormData) {
+  const result = bannerAddSchema.safeParse(
+    Object.fromEntries(formData.entries())
+  );
+  if (result.success === false) {
+    return result.error.formErrors.fieldErrors;
+  }
+
+  const data = result.data;
+
+  await fs.mkdir("public/banners", { recursive: true });
+  const imagePath = `/banners/${crypto.randomUUID()}-${data.image.name}`;
+  await fs.writeFile(
+    `public${imagePath}`,
+    Buffer.from(await data.image.arrayBuffer())
+  );
+
+  await db.banner.create({
+    data: {
+      title: data.name,
+      imagePath,
+    },
+  });
+
+  redirect("/admin/banner/edit");
 }
 
 export async function updateProduct(
@@ -113,6 +151,8 @@ export async function updateProduct(
     where: { id },
     data: {
       name: data.name,
+      authorName: data.author,
+      publisher: data.publisher,
       description: data.description,
       price: data.price,
       imagePath,
@@ -128,4 +168,11 @@ export async function deleteProduct(id: string) {
   if (product == null) return notFound();
 
   await fs.unlink(`public${product.imagePath}`);
+}
+
+export async function deleteBanner(id: string) {
+  const banner = await db.banner.delete({ where: { id } });
+  if (banner == null) return notFound();
+
+  await fs.unlink(`public${banner.imagePath}`);
 }

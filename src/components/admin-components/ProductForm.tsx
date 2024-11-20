@@ -38,6 +38,34 @@ export function ProductUpdateForm({ product }: { product?: Product | null }) {
         {error.name && <div className="text-destructive">{error.name}</div>}
       </div>
       <div className="space-y-2">
+        <Label className="font-bold" htmlFor="author">
+          Autor
+        </Label>
+        <Input
+          type="text"
+          id="author"
+          name="author"
+          required
+          defaultValue={product?.authorName || ""}
+        />
+        {error.author && <div className="text-destructive">{error.name}</div>}
+      </div>
+      <div className="space-y-2">
+        <Label className="font-bold" htmlFor="publisher">
+          Vydavateľstvo
+        </Label>
+        <Input
+          type="text"
+          id="publisher"
+          name="publisher"
+          required
+          defaultValue={product?.publisher || ""}
+        />
+        {error.publisher && (
+          <div className="text-destructive">{error.name}</div>
+        )}
+      </div>
+      <div className="space-y-2">
         <Label className="font-bold" htmlFor="price">
           Cena Produktu
         </Label>

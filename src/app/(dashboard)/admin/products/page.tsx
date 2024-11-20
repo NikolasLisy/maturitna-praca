@@ -41,6 +41,8 @@ async function ProductsTable() {
     select: {
       id: true,
       name: true,
+      authorName: true,
+      publisher: true,
       price: true,
       category: true,
       stock: true,
@@ -57,7 +59,16 @@ async function ProductsTable() {
         <TableRow>
           <TableHead>Názov</TableHead>
           <TableHead>Cena</TableHead>
-          <TableHead>Kategória</TableHead>
+          <TableHead>
+            Kategória
+            <Link
+              className="text-blue-500 pl-2"
+              href="/admin/products/new/category"
+            >
+              Vytvoriť kategóriu
+            </Link>
+          </TableHead>
+          <TableHead>Vydavateľstvo</TableHead>
           <TableHead>Počet kusov</TableHead>
           <TableHead>Objednávky</TableHead>
           <TableHead className="w-0"></TableHead>
@@ -66,12 +77,15 @@ async function ProductsTable() {
       <TableBody>
         {products.map((product) => (
           <TableRow key={product.id}>
-            <TableCell>{product.name}</TableCell>
+            <TableCell>
+              {product.name} - {product.authorName}
+            </TableCell>
             <TableCell>{formatCurrency(product.price)}</TableCell>
             <TableCell className="flex gap-1 items-center">
               {product.category.name}
               <CategorySelector productId={product.id} />
             </TableCell>
+            <TableCell>{product.publisher}</TableCell>
             <TableCell>{product.stock}</TableCell>
             <TableCell>{formatNumber(product._count.orderItems)}</TableCell>
             <TableCell>

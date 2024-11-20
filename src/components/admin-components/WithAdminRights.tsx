@@ -8,6 +8,7 @@ import {
 } from "../ui/card";
 import db from "@/lib/db";
 import { formatCurrency, formatNumber } from "@/lib/formatters";
+import Link from "next/link";
 
 async function getSalesData() {
   const data = await db.order.aggregate({
@@ -89,6 +90,27 @@ const WithAdminRights = async () => {
           productData.allProducts
         )}`}
       />
+      <Card>
+        <CardHeader>
+          <CardTitle>Hlavný banner</CardTitle>
+          <CardDescription>Reklamný banner</CardDescription>
+        </CardHeader>
+        <CardContent className="flex">
+          <Link
+            href="/admin/banner/edit"
+            className="text-blue-500 hover:text-blue-600"
+          >
+            Upraviť
+          </Link>
+          <p className="pl-2 pr-2">alebo</p>
+          <Link
+            href="/admin/banner/new"
+            className="text-blue-500 hover:text-blue-600"
+          >
+            Vytvoriť
+          </Link>
+        </CardContent>
+      </Card>
     </div>
   );
 };
