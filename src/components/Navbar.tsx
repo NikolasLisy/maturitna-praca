@@ -9,6 +9,7 @@ import {
   BookOpenText,
   CircleUserRound,
   Package,
+  Search,
   Settings,
   User,
   UserRoundCog,
@@ -22,6 +23,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { Input } from "./ui/input";
+import { Searchbar } from "./Searchbar";
 
 export async function Navbar() {
   const session = await getServerSession(authOptions);
@@ -42,92 +45,104 @@ export async function Navbar() {
   }
 
   return (
-    <nav className="flex items-center justify-between h-24">
-      <div className="lg:block">
-        <div className="flex">
-          <BookOpenText />
-          <Link href="/" className="font-bold text-xl pl-1 text-black">
-            LITERA.sk
-          </Link>
+    <>
+      <nav className="flex items-center justify-between h-24">
+        <div className="lg:block">
+          <div className="flex">
+            <BookOpenText />
+            <Link href="/" className="font-bold text-xl pl-1 text-black">
+              LITERA.sk
+            </Link>
+          </div>
         </div>
-      </div>
-      <div className="hidden md:flex">
-        <div className="flex gap-6">
-          <Link href="/store">Knihy</Link>
-          <Link href="/contact">Kontakt</Link>
-          <Link href="/newsletter">Newsletter</Link>
+        <div className="hidden md:flex ">
+          <div className="flex gap-6 items-center">
+            <Link href="/store">Knihy</Link>
+            <Link href="/contact">Kontakt</Link>
+            <Link href="/newsletter">Newsletter</Link>
+            <div className="flex">
+              <Input
+                className="w-full rounded-tr-none rounded-br-none"
+                placeholder="Zadajte názov knihy, autora"
+              />
+              <Button className="rounded-tl-none rounded-bl-none">
+                <Search size={20} />
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="flex items-center gap-4 xl:gap-8 justify-end">
-        <MobileMenu isAdmin={isAdmin} session={session} />
-        {session?.user ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <CircleUserRound className="cursor-pointer w-8 h-8" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>Môj účet</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <User />
-                  {currentUser && (
-                    <Link
-                      className="w-full"
-                      href={`/profile/${currentUser.id}`}
-                    >
-                      Profil
-                    </Link>
-                  )}
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Settings />
-                  {currentUser && (
-                    <Link
-                      className="w-full"
-                      href={`/profile/${currentUser.id}/settings`}
-                    >
-                      Nastavenia
-                    </Link>
-                  )}
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Package />
-                  {currentUser && (
-                    <Link
-                      className="w-full"
-                      href={`/profile/${currentUser.id}/orders`}
-                    >
-                      Objednávky
-                    </Link>
-                  )}
-                </DropdownMenuItem>
-                {isAdmin && (
-                  <DropdownMenuItem>
-                    <UserRoundCog />
-                    <Link className="w-full" href={`/admin`}>
-                      Admin Dashboard
-                    </Link>
-                  </DropdownMenuItem>
-                )}
+        <div className="flex items-center gap-4 xl:gap-8 justify-end">
+          <MobileMenu isAdmin={isAdmin} session={session} />
+          {session?.user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <CircleUserRound className="cursor-pointer w-8 h-8" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuLabel>Môj účet</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <LogOutUserButton />
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ) : (
-          // <LogOutUserButton />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem>
+                    <User />
+                    {currentUser && (
+                      <Link
+                        className="w-full"
+                        href={`/profile/${currentUser.id}`}
+                      >
+                        Profil
+                      </Link>
+                    )}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Settings />
+                    {currentUser && (
+                      <Link
+                        className="w-full"
+                        href={`/profile/${currentUser.id}/settings`}
+                      >
+                        Nastavenia
+                      </Link>
+                    )}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Package />
+                    {currentUser && (
+                      <Link
+                        className="w-full"
+                        href={`/profile/${currentUser.id}/orders`}
+                      >
+                        Objednávky
+                      </Link>
+                    )}
+                  </DropdownMenuItem>
+                  {isAdmin && (
+                    <DropdownMenuItem>
+                      <UserRoundCog />
+                      <Link className="w-full" href={`/admin`}>
+                        Admin Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <LogOutUserButton />
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            // <LogOutUserButton />
 
-          <Link
-            href="/sign-in"
-            className={`hidden md:flex ${buttonVariants()}`}
-          >
-            Prihlásiť sa
-          </Link>
-        )}
-      </div>
-    </nav>
+            <Link
+              href="/sign-in"
+              className={`hidden md:flex ${buttonVariants()}`}
+            >
+              Prihlásiť sa
+            </Link>
+          )}
+        </div>
+      </nav>
+      <Searchbar />
+    </>
   );
 }

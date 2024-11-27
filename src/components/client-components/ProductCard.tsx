@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import {
   Card,
@@ -20,21 +22,10 @@ type ProductCardProps = {
   price: number;
 };
 
-function wordFormatter(word: string) {
-  let newWord = "";
-  if (word.length > 10) {
-    newWord = word.slice(0, 10) + "...";
-  } else {
-    newWord = word;
-  }
-
-  return newWord;
-}
-
-function descriptionFormatter(description: string) {
+function descriptionFormatter(description: string, length: number) {
   let newDescription = "";
-  if (description.length > 20) {
-    newDescription = description.slice(0, 20) + "...";
+  if (description.length > length) {
+    newDescription = description.slice(0, length) + "...";
   } else {
     newDescription = description;
   }
@@ -52,23 +43,47 @@ export function ProductCard({
   price,
 }: ProductCardProps) {
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-row overflow-hidden h-[330px] md:h-[300px]">
       <div className="flex justify-center items-center">
-        <Image src={imagePath} width={200} height={400} alt="ProductImage" />
+        <Image
+          src={imagePath}
+          width={200}
+          height={400}
+          alt="ProductImage"
+          className="object-cover"
+        />
       </div>
-      <CardHeader>
-        <CardTitle>{wordFormatter(name)}</CardTitle>
-        <CardDescription>{price}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p>{descriptionFormatter(description)}</p>
-        <Link href={"/products"} className="text-blue-500 hover:text-blue-600">
-          Viac
-        </Link>
-      </CardContent>
-      <CardFooter>
-        <Button className="w-full">Pridať do košíka</Button>
-      </CardFooter>
+      <div className="flex flex-col justify-between">
+        <CardHeader>
+          <CardTitle className="line-clamp-1">{name}</CardTitle>
+          <CardDescription>{price}€</CardDescription>
+          <CardDescription className="line-clamp-1">
+            {authorName}
+          </CardDescription>
+          <CardDescription className="line-clamp-1">
+            {publisher}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="block md:hidden">
+            {descriptionFormatter(description, 50)}
+          </p>
+          <p className="hidden md:block">
+            {descriptionFormatter(description, 20)}
+          </p>
+          <Link
+            href={"/products"}
+            className="text-blue-500 hover:text-blue-600"
+          >
+            Viac
+          </Link>
+        </CardContent>
+        <CardFooter className="mt-auto">
+          <Button size="lg" className="w-full">
+            Pridať do košíka
+          </Button>
+        </CardFooter>
+      </div>
     </Card>
   );
 }

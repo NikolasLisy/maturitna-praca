@@ -1,11 +1,9 @@
-import { CarouselImage } from "@/components/client-components/Carouselmage";
-import { ProductCard } from "@/components/client-components/ProductCard";
+import { CarouselSwiper } from "@/components/client-components/CarouselImageUsingSwiper";
+import { ProductSwiper } from "@/components/client-components/ProductSwiper";
 import { Button } from "@/components/ui/button";
-import { authOptions } from "@/lib/auth";
 import db from "@/lib/db";
 import { Product } from "@prisma/client";
 import { ArrowRight } from "lucide-react";
-import { getServerSession } from "next-auth";
 import Link from "next/link";
 
 async function getMostPopularProducts() {
@@ -30,13 +28,12 @@ function getNewestProducts() {
 }
 
 export default async function Home() {
-  const session = await getServerSession(authOptions);
   const slides = await db.banner.findMany();
 
   return (
     <main className="space-y-12">
-      <div className="-mx-4 md:-mx-8 lg:-mx-16 xl:-mx-32 2xl:-mx-64">
-        <CarouselImage slides={slides} />
+      <div>
+        <CarouselSwiper slides={slides} />
       </div>
       <ProductGridSection
         productsFetcher={getNewestProducts}
@@ -72,10 +69,8 @@ async function ProductGridSection({
           </Link>
         </Button>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-        {products.map((product) => (
-          <ProductCard key={product.id} {...product} />
-        ))}
+      <div>
+        <ProductSwiper products={products} />
       </div>
     </div>
   );
