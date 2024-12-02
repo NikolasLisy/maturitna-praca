@@ -1,6 +1,7 @@
 import NotLoggedIn from "@/components/admin-components/NotLoggedIn";
 import WithAdminRights from "@/components/admin-components/WithAdminRights";
 import WithoutAdminRights from "@/components/admin-components/WithoutAdminRights";
+
 import { authOptions } from "@/lib/auth";
 import db from "@/lib/db";
 import { getServerSession } from "next-auth";

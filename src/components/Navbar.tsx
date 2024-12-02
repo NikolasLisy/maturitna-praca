@@ -25,6 +25,7 @@ import {
 } from "./ui/dropdown-menu";
 import { Input } from "./ui/input";
 import { Searchbar } from "./Searchbar";
+import { SearchbarLargeScreen } from "./SearchbarLargeScreen";
 
 export async function Navbar() {
   const session = await getServerSession(authOptions);
@@ -57,18 +58,10 @@ export async function Navbar() {
         </div>
         <div className="hidden md:flex ">
           <div className="flex gap-6 items-center">
-            <Link href="/store">Knihy</Link>
+            <Link href="/products">Knihy</Link>
             <Link href="/contact">Kontakt</Link>
             <Link href="/newsletter">Newsletter</Link>
-            <div className="flex">
-              <Input
-                className="w-full rounded-tr-none rounded-br-none"
-                placeholder="Zadajte názov knihy, autora"
-              />
-              <Button className="rounded-tl-none rounded-bl-none">
-                <Search size={20} />
-              </Button>
-            </div>
+            <SearchbarLargeScreen />
           </div>
         </div>
         <div className="flex items-center gap-4 xl:gap-8 justify-end">
