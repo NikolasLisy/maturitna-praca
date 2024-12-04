@@ -11,6 +11,7 @@ import {
   Package,
   Search,
   Settings,
+  ShoppingCart,
   User,
   UserRoundCog,
 } from "lucide-react";
@@ -67,62 +68,70 @@ export async function Navbar() {
         <div className="flex items-center gap-4 xl:gap-8 justify-end">
           <MobileMenu isAdmin={isAdmin} session={session} />
           {session?.user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <CircleUserRound className="cursor-pointer w-8 h-8" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56">
-                <DropdownMenuLabel>Môj účet</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    <User />
-                    {currentUser && (
-                      <Link
-                        className="w-full"
-                        href={`/profile/${currentUser.id}`}
-                      >
-                        Profil
-                      </Link>
-                    )}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Settings />
-                    {currentUser && (
-                      <Link
-                        className="w-full"
-                        href={`/profile/${currentUser.id}/settings`}
-                      >
-                        Nastavenia
-                      </Link>
-                    )}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Package />
-                    {currentUser && (
-                      <Link
-                        className="w-full"
-                        href={`/profile/${currentUser.id}/orders`}
-                      >
-                        Objednávky
-                      </Link>
-                    )}
-                  </DropdownMenuItem>
-                  {isAdmin && (
-                    <DropdownMenuItem>
-                      <UserRoundCog />
-                      <Link className="w-full" href={`/admin`}>
-                        Admin Dashboard
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
+            <>
+              <Button className="relative">
+                <ShoppingCart />
+                <div className="rounded bg-red-500 pl-2 pr-2 absolute -bottom-1 -right-2">
+                  3
+                </div>
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <CircleUserRound className="cursor-pointer w-8 h-8" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56">
+                  <DropdownMenuLabel>Môj účet</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <LogOutUserButton />
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem>
+                      <User />
+                      {currentUser && (
+                        <Link
+                          className="w-full"
+                          href={`/profile/${currentUser.id}`}
+                        >
+                          Profil
+                        </Link>
+                      )}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Settings />
+                      {currentUser && (
+                        <Link
+                          className="w-full"
+                          href={`/profile/${currentUser.id}/settings`}
+                        >
+                          Nastavenia
+                        </Link>
+                      )}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Package />
+                      {currentUser && (
+                        <Link
+                          className="w-full"
+                          href={`/profile/${currentUser.id}/orders`}
+                        >
+                          Objednávky
+                        </Link>
+                      )}
+                    </DropdownMenuItem>
+                    {isAdmin && (
+                      <DropdownMenuItem>
+                        <UserRoundCog />
+                        <Link className="w-full" href={`/admin`}>
+                          Admin Dashboard
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <LogOutUserButton />
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
           ) : (
             // <LogOutUserButton />
 

@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { ProductCard } from "@/components/client-components/ProductCard";
 import { Loader2 } from "lucide-react";
+import { Filtering } from "@/components/client-components/Filtering";
+import NotFound from "@/components/client-components/notFound";
 
 const fetchProducts = async (url: string) => {
   const response = await fetch(url);
@@ -55,13 +57,19 @@ export default function ProductsPage() {
 
   return (
     <div>
-      <div className="pt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {products.length > 0 ? (
-          products.map((product) => <ProductCard {...product} />)
-        ) : (
-          <p>Žiadne produkty nenájdené</p>
-        )}
+      <div className="flex justify-end items-center pt-4">
+        <h1>Triedenie: </h1>
+        <Filtering />
       </div>
+      {products.length > 0 ? (
+        <div className="pt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {products.map((product) => (
+            <ProductCard {...product} />
+          ))}
+        </div>
+      ) : (
+        <NotFound />
+      )}
     </div>
   );
 }
