@@ -60,8 +60,6 @@ export async function Navbar() {
         <div className="hidden md:flex ">
           <div className="flex gap-6 items-center">
             <Link href="/products">Knihy</Link>
-            <Link href="/contact">Kontakt</Link>
-            <Link href="/newsletter">Newsletter</Link>
             <SearchbarLargeScreen />
           </div>
         </div>

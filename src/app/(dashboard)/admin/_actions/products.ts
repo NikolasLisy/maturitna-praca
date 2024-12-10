@@ -22,7 +22,7 @@ const addSchema = z.object({
   stock: z.coerce
     .number()
     .int()
-    .min(1, { message: "Počet kusov musí byť väčší alebo rovný 1" }),
+    .min(0, { message: "Počet kusov musí byť väčší alebo rovný 0" }),
   image: imageSchema.refine((file) => file.size > 0, {
     message: "Fotka produktu je povinná",
   }),

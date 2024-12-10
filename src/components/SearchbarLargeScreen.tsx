@@ -18,7 +18,7 @@ export function SearchbarLargeScreen() {
 
   return (
     <form onSubmit={onSearch}>
-      <div className="flex">
+      <div className="flex md:w-[300px] lg:w-[500px]">
         <Input
           value={searchQuery}
           onChange={(event) => setSearchQuery(event.target.value)}

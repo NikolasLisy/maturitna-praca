@@ -63,9 +63,12 @@ export default function ProductsPage() {
       </div>
       {products.length > 0 ? (
         <div className="pt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {products.map((product) => (
-            <ProductCard {...product} />
-          ))}
+          {products.map((product) => {
+            if (product.stock === 0) {
+              return null;
+            }
+            return <ProductCard key={product.id} {...product} />;
+          })}
         </div>
       ) : (
         <NotFound />

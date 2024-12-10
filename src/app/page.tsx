@@ -56,8 +56,7 @@ async function ProductGridSection({
   title,
   productsFetcher,
 }: ProductGridSectionProps) {
-  const products = await productsFetcher(); // Zavolanie funkcie, ktorá získava produkty
-
+  const products = await productsFetcher();
   return (
     <div className="space-y-4">
       <div className="flex gap-4">

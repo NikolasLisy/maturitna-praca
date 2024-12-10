@@ -4,15 +4,15 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import Image from "next/image";
 import { Product } from "@prisma/client";
 import { ProductCard } from "./ProductCard";
 
 type ProductSwiperProps = {
   products: Product[];
+  id: string;
 };
 
-export function ProductSwiper({ products }: ProductSwiperProps) {
+export function ProductSwiper({ products, id }: ProductSwiperProps) {
   return (
     <Swiper
       modules={[Navigation, Pagination, Autoplay]}
@@ -33,11 +33,17 @@ export function ProductSwiper({ products }: ProductSwiperProps) {
         },
       }}
     >
-      {products.map((product, index) => (
-        <SwiperSlide key={index}>
-          <ProductCard key={product.id} {...product} />
-        </SwiperSlide>
-      ))}
+      {products.map((product) => {
+        if (product.stock === 0) return null;
+        if (product.id === id) {
+          return null;
+        }
+        return (
+          <SwiperSlide key={product.id}>
+            <ProductCard key={product.id} {...product} />
+          </SwiperSlide>
+        );
+      })}
     </Swiper>
   );
 }
