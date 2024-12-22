@@ -9,6 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useCart } from "@/context/ShoppingCartContext";
+import { useToast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/formatters";
 import { ArrowRight, Loader2, Truck } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -36,7 +38,8 @@ export default function EachProdcutPage({
 }: {
   params: { id: string };
 }) {
-  const { data: session, status } = useSession();
+  const { toast } = useToast();
+  const { data: session } = useSession();
   const [product, setProduct] = useState<Product | null>(null);
   const [products, setProducts] = useState<Product[] | null>(null);
   const router = useRouter();
@@ -67,9 +70,41 @@ export default function EachProdcutPage({
     );
   }
 
-  const handleAddToCart = () => {
+  const { updateCartCount } = useCart();
+
+  const handleAddToCart = async () => {
     if (!session) {
       router.push("/sign-in");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/cart/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: product.id }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add to cart");
+      }
+
+      const countResponse = await fetch("/api/cart/count");
+      const countData = await countResponse.json();
+      updateCartCount(countData.count);
+
+      toast({
+        title: "Úspešne pridané do košíka",
+        description: `${product.name} bol pridaný do vášho košíka.`,
+      });
+    } catch (error) {
+      console.error(error);
+
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa pridať produkt do košíka.",
+        variant: "destructive",
+      });
     }
   };
 

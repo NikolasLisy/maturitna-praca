@@ -69,7 +69,7 @@ async function ProductGridSection({
         </Button>
       </div>
       <div>
-        <ProductSwiper products={products} />
+        <ProductSwiper id={""} products={products} />
       </div>
     </div>
   );

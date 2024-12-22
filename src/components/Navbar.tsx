@@ -27,6 +27,7 @@ import {
 import { Input } from "./ui/input";
 import { Searchbar } from "./Searchbar";
 import { SearchbarLargeScreen } from "./SearchbarLargeScreen";
+import { ShoppingCarts } from "./client-components/ShoppingCart";
 
 export async function Navbar() {
   const session = await getServerSession(authOptions);
@@ -67,12 +68,7 @@ export async function Navbar() {
           <MobileMenu isAdmin={isAdmin} session={session} />
           {session?.user ? (
             <>
-              <Button className="relative">
-                <ShoppingCart />
-                <div className="rounded bg-red-500 pl-2 pr-2 absolute -bottom-1 -right-2">
-                  3
-                </div>
-              </Button>
+              <ShoppingCarts />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <CircleUserRound className="cursor-pointer w-8 h-8" />

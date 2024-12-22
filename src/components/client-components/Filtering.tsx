@@ -1,21 +1,22 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+import { useRouter } from "next/navigation";
+import { List } from "lucide-react";
+import { Button } from "../ui/button";
 
 export function Filtering() {
+  const router = useRouter();
+
+  const handleSort = (order: string) => {
+    router.push(`?order=${order}`);
+  };
+
   return (
-    <Select>
-      <SelectTrigger className="w-60">
-        <SelectValue placeholder="Vyberte typ triedenia" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="CenaN">Cena od najnižšej po najvyššiu</SelectItem>
-        <SelectItem value="Cenanaj">Cena od najvyššej po najnižšiu</SelectItem>
-      </SelectContent>
-    </Select>
+    <div className="flex gap-2 items-center pt-4 pb-4">
+      <div className="flex gap-1">
+        <List />
+        <h1>Zoradiť:</h1>
+      </div>
+      <Button onClick={() => handleSort("asc")}>Najlacnejšie</Button>
+      <Button onClick={() => handleSort("desc")}>Najdrahšie</Button>
+    </div>
   );
 }

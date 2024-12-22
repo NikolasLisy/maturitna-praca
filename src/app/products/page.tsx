@@ -20,17 +20,20 @@ const fetchProducts = async (url: string) => {
 export default function ProductsPage() {
   const search = useSearchParams();
   const searchQuery = search ? search.get("q") : null;
+  const order = search ? search.get("order") : null;
   const encodedSearchQuery = encodeURI(searchQuery || "");
+  const encodedOrder = encodeURI(order || "");
 
   const [products, setProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     const getProducts = async () => {
       try {
         setIsLoading(true);
         const data = await fetchProducts(
-          `/api/search/products?q=${encodedSearchQuery}`
+          `/api/search/products?q=${encodedSearchQuery}&order=${encodedOrder}`
         );
         setProducts(data.products || []);
       } catch (error) {
@@ -41,7 +44,7 @@ export default function ProductsPage() {
     };
 
     getProducts();
-  }, [encodedSearchQuery]);
+  }, [encodedSearchQuery, encodedOrder]);
 
   if (isLoading) {
     return (
@@ -57,8 +60,7 @@ export default function ProductsPage() {
 
   return (
     <div>
-      <div className="flex justify-end items-center pt-4">
-        <h1>Triedenie: </h1>
+      <div className="flex items-center pt-4">
         <Filtering />
       </div>
       {products.length > 0 ? (
