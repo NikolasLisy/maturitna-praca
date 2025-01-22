@@ -28,6 +28,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const product = await db.product.findUnique({
+      where: { id: productId },
+    });
+
+    if (!product) {
+      return NextResponse.json(
+        { message: "Produkt sa nenašiel" },
+        { status: 404 }
+      );
+    }
+
     const cart = await db.cart.upsert({
       where: { userId: user.id },
       create: { userId: user.id },
@@ -37,6 +48,17 @@ export async function POST(req: NextRequest) {
     const existingCartItem = await db.cartItem.findFirst({
       where: { cartId: cart.id, productId },
     });
+
+    const currentQuantity = existingCartItem ? existingCartItem.quantity : 0;
+
+    if (currentQuantity >= product.stock) {
+      return NextResponse.json(
+        {
+          message: `Nie je možné pridať viac položiek. Dostupné množstvo na sklade: ${product.stock}.`,
+        },
+        { status: 400 }
+      );
+    }
 
     if (existingCartItem) {
       await db.cartItem.update({
@@ -50,12 +72,13 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(
-      { message: "Product added to cart" },
+      { message: "Produkt bol úspešne pridaný do košíka" },
       { status: 200 }
     );
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
-      { messag: "Interná chyba servera" },
+      { message: "Interná chyba servera" },
       { status: 500 }
     );
   }

@@ -18,7 +18,7 @@ type CartContextType = {
   products: Product[];
   cartItems: CartItem[];
   fetchCartItems: () => Promise<void>;
-  addItemToCart: (productId: string) => void; // Pridanie novej funkcie
+  addItemToCart: (productId: string) => void;
 };
 
 type Product = {
@@ -50,37 +50,57 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCartCount(count);
   };
 
-  const addItemToCart = (productId: string) => {
+  const addItemToCart = async (productId: string) => {
     const product = products.find((p) => p.id === productId);
     if (!product) return;
 
     const existingItem = cartItems.find((item) => item.productId === productId);
 
-    if (existingItem) {
-      if (existingItem.quantity + 1 > product.quantity) {
+    try {
+      const response = await fetch("/api/cart/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
         toast({
           title: "Chyba",
-          description: `Nie je možné pridať viac položiek. Nedostatočné množstvo na sklade!`,
+          description: errorData.message || "Nepodarilo sa pridať produkt.",
           variant: "destructive",
         });
         return;
       }
 
-      setCartItems((prev) =>
-        prev.map((item) =>
-          item.productId === productId
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
-      );
-    } else {
-      setCartItems((prev) => [
-        ...prev,
-        { productId, quantity: 1, price: product.price },
-      ]);
-    }
+      if (existingItem) {
+        setCartItems((prev) =>
+          prev.map((item) =>
+            item.productId === productId
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          )
+        );
+      } else {
+        setCartItems((prev) => [
+          ...prev,
+          { productId, quantity: 1, price: product.price },
+        ]);
+      }
 
-    setCartCount((prev) => prev + 1);
+      setCartCount((prev) => prev + 1);
+      toast({
+        title: "Úspech",
+        description: `${product.name} bol pridaný do košíka.`,
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa pridať produkt do košíka.",
+        variant: "destructive",
+      });
+    }
   };
 
   useEffect(() => {

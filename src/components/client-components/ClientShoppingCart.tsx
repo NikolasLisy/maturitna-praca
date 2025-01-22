@@ -3,6 +3,7 @@
 import { useCart } from "@/context/ShoppingCartContext";
 import { Button } from "../ui/button";
 import { X } from "lucide-react";
+import Link from "next/link";
 
 type ClientShoppingCartProps = {
   isOpen: boolean;
@@ -10,6 +11,11 @@ type ClientShoppingCartProps = {
 
 export function ClientShoppingCart({ isOpen }: ClientShoppingCartProps) {
   const { closeCart, cartItems, products } = useCart();
+
+  const totalPrice = cartItems.reduce((total, item) => {
+    const product = products.find((p) => p.id === item.productId);
+    return product ? total + product.price * item.quantity : total;
+  }, 0);
 
   return (
     <>
@@ -49,8 +55,10 @@ export function ClientShoppingCart({ isOpen }: ClientShoppingCartProps) {
             ) : (
               <p>Načítavam košík...</p>
             )}
-            <h2 className="text-3xl font-bold grid pb-10">Celkovo:</h2>
-            <Button className="w-full">Zaplatiť</Button>
+            <h2 className="text-3xl font-bold grid pb-10">
+              Celkovo: {totalPrice.toFixed(2)} €
+            </h2>
+            <Button className="w-full">Objednať</Button>
           </div>
         </div>
       </div>
