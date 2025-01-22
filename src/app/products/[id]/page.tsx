@@ -70,7 +70,7 @@ export default function EachProdcutPage({
     );
   }
 
-  const { updateCartCount } = useCart();
+  const { updateCartCount, addItemToCart } = useCart();
 
   const handleAddToCart = async () => {
     if (!session) {
@@ -92,6 +92,8 @@ export default function EachProdcutPage({
       const countResponse = await fetch("/api/cart/count");
       const countData = await countResponse.json();
       updateCartCount(countData.count);
+
+      addItemToCart(product.id);
 
       toast({
         title: "Úspešne pridané do košíka",

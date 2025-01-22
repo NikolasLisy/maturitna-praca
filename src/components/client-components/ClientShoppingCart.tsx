@@ -9,7 +9,7 @@ type ClientShoppingCartProps = {
 };
 
 export function ClientShoppingCart({ isOpen }: ClientShoppingCartProps) {
-  const { closeCart } = useCart();
+  const { closeCart, cartItems, products } = useCart();
 
   return (
     <>
@@ -29,7 +29,28 @@ export function ClientShoppingCart({ isOpen }: ClientShoppingCartProps) {
             <h2 className="text-lg font-semibold">Nákupný košík</h2>
           </div>
           <div>
-            <p>Obsah nákupného košíka</p>
+            {cartItems && products ? (
+              cartItems.map((cartItem) => {
+                const product = products.find(
+                  (p) => p.id === cartItem.productId
+                );
+
+                return product ? (
+                  <div
+                    key={cartItem.productId}
+                    className="grid grid-cols-3 gap-8 pb-2"
+                  >
+                    <span>{product.name}</span>
+                    <span>{cartItem.quantity} ks</span>
+                    <span>{product.price * cartItem.quantity} €</span>
+                  </div>
+                ) : null;
+              })
+            ) : (
+              <p>Načítavam košík...</p>
+            )}
+            <h2 className="text-3xl font-bold grid pb-10">Celkovo:</h2>
+            <Button className="w-full">Zaplatiť</Button>
           </div>
         </div>
       </div>
